@@ -42,10 +42,22 @@ document.querySelector("#quote-form").addEventListener("submit", (event) => {
   event.preventDefault();
 
   const form = new FormData(event.currentTarget);
+  const nameField = event.currentTarget.elements.name;
+  const customerName = String(form.get("name") || "").trim();
+
+  if (!customerName) {
+    nameField.setCustomValidity("Please enter your name.");
+    nameField.reportValidity();
+    nameField.focus();
+    return;
+  }
+
+  nameField.setCustomValidity("");
   const goals = form.getAll("goal");
   const lines = [
     "Hi Time2TintMobile! I'd like to request a quote.",
     "",
+    `Name: ${customerName}`,
     `Project: ${form.get("project")}`,
     `Details: ${form.get("details")}`,
     `City/ZIP: ${form.get("location") || "I'll share when you reply"}`,
@@ -56,6 +68,10 @@ document.querySelector("#quote-form").addEventListener("submit", (event) => {
   ];
 
   window.location.href = smsHref(lines.join("\n"));
+});
+
+document.querySelector("#customer-name").addEventListener("input", (event) => {
+  event.currentTarget.setCustomValidity("");
 });
 
 const lightbox = document.querySelector("#lightbox");
